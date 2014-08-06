@@ -1,5 +1,6 @@
 {
     "name": "mad-tools/environment-provider",
+    "description": "PHP Environment with Config",
     "license": "MIT",
     "minimum-stability": "dev",
     "authors": [
