@@ -11,36 +11,36 @@ EnvironmentProvider
 
 Код распространяется по лицензии [MIT](http://opensource.org/licenses/MIT) и предоставляется **AS-IS**.
 
-Пример конфига для определения среды
-====================================
+Пример использования
+====================
+
+**/env/mapper.ini**
 
 ```ini
-
-    ; /env/mapper.ini
-    [settings]
-    fallback = default
-    config_path = _PROVIDER_INI_FILE_PATH_"/config"
-
-    [default]
-    scan[] = 'production.public-domain'
-
-    [mad-environ]
-    ; scan IP ADDRESS
-    scan[] = "::1"
-    ; scan IP ADDRESS
-    scan[] = "127.0.0.1"
-    ; scan CONSOLE USER
-    scan[] = "MadFaill"
-    ; scan HTTP-DOMAIN
-    scan[] = "madfaill.local-domain"
-
+[settings]
+fallback = default
+config_path = _PROVIDER_INI_FILE_PATH_"/config"
+[default]
+scan[] = 'production.public-domain'
+[mad-environ]
+; scan IP ADDRESS
+scan[] = "::1"
+; scan IP ADDRESS
+scan[] = "127.0.0.1"
+; scan CONSOLE USER
+scan[] = "MadFaill"
+; scan HTTP-DOMAIN
+scan[] = "madfaill.local-domain"
 ```
+
+**/env/config/mad-env.ini**
 
 ```ini
-    ; mad-env.ini
-    [group-1]
-    option[g1] = mad-env
+[group-1]
+option[g1] = mad-env
 ```
+
+**использование**
 
 ```php
 $cfg = __DIR__.'/env/mapper.ini';
