@@ -1,0 +1,17 @@
+{
+    "name": "mad-tools/environment-provider",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "MadFaill",
+            "email": "madfaill@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-0": {
+            "EnvironmentProvider": "src/"
+        }
+    }
+}
