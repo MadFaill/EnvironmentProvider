@@ -115,6 +115,16 @@ class Environ
 	}
 
 	/**
+	 *
+	 * @param null $key
+	 * @return mixed
+	 */
+	public function data($key=null)
+	{
+		return $key ? (isset($this->data[$key]) ? $this->data[$key] : null) : null;
+	}
+
+	/**
 	 * @return string
 	 */
 	private function _config_ini_file()
