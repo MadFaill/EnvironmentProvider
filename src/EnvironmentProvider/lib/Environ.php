@@ -37,7 +37,7 @@ class Environ
 	public function __construct(array $environment_mapping)
 	{
 		$this->data['user']            = isset($_SERVER['USER']) ? $_SERVER['USER'] : 'web';
-		$this->data['is_console']      = $this->data['user'] != 'web';
+		$this->data['is_console']      = isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REMOTE_ADDR']); // fix if CGI! <==$this->data['user'] != 'web';
 		$this->data['domain']          = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'console';
 		$this->data['server_ip']       = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : null;
 		$this->data['server_software'] = isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : null;
