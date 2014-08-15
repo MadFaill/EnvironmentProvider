@@ -20,12 +20,14 @@ namespace EnvironmentProvider\lib;
  * @version     0.01
  * @package     EnvironmentProvider
  */
-class Environ 
+class Environ
 {
 	/** @var \EnvironmentProvider\lib\Config  */
 	private $config;
 
 	private $environment_mapping = array();
+	private $environment_match = array();
+	private $environment_env = array();
 	private $fallback;
 	private $ini_path;
 	private $environ;
@@ -41,6 +43,7 @@ class Environ
 		$this->data['domain']          = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'console';
 		$this->data['server_ip']       = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : null;
 		$this->data['server_software'] = isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : null;
+		$this->data['path']            = $_SERVER['SCRIPT_FILENAME'];
 		$this->data['client_ip']       = null;
 		$this->data['client_agent']    = null;
 
@@ -62,9 +65,21 @@ class Environ
 		$this->fallback = $environment_mapping['settings']['fallback'];
 		$this->ini_path = $environment_mapping['settings']['config_path'];
 
-		foreach ($environment_mapping as $environ => $data) {
+		foreach ($environment_mapping as $environ => $data)
+		{
+			// fill scan
 			if (isset($data['scan'])) {
 				$this->environment_mapping[$environ] = $data['scan'];
+			}
+
+			// fill match
+			if (isset($data['match'])) {
+				$this->environment_match[$environ] = $data['match'];
+			}
+
+			// by env key
+			if (isset($data['env'])) {
+				$this->environment_env[$environ] = $data['env'];
 			}
 		}
 	}
@@ -94,23 +109,10 @@ class Environ
 	 */
 	public function current()
 	{
-		if (!$this->environ)
-		{
-			foreach ($this->environment_mapping as $env => $search)
-			{
-				if (   in_array($this->data['server_ip'], $search)
-					|| in_array($this->data['domain'], $search)
-					|| in_array($this->data['user'], $search))
-				{
-					$this->environ = $env;
-					break;
-				}
-			}
-
-			if (!$this->environ) {
-				$this->environ = $this->fallback;
-			}
+		if (!$this->environ) {
+			$this->environ = $this->_detect_env();
 		}
+
 		return $this->environ;
 	}
 
@@ -130,6 +132,50 @@ class Environ
 	private function _config_ini_file()
 	{
 		return sprintf("%s/%s.ini", $this->ini_path, $this->current());
+	}
+
+	/**
+	 * @return string
+	 */
+	private function _detect_env()
+	{
+		// try env key
+		foreach ($this->environment_env as $env => $environ)
+		{
+			foreach ($environ as $eKey => $eValue) {
+				if (isset($_ENV[$eKey]) && ($_ENV[$eKey] == $eValue) ) {
+					return $env;
+				}
+			}
+		}
+
+		// try scan
+		foreach ($this->environment_mapping as $env => $search)
+		{
+			if (   in_array($this->data['server_ip'], $search)
+				|| in_array($this->data['domain'], $search)
+				|| in_array($this->data['user'], $search))
+			{
+				return $env;
+			}
+		}
+
+		// try match
+		foreach ($this->environment_match as $env => $match)
+		{
+			foreach ($this->data as $dKey => $dVal)
+			{
+				if (isset($match[$dKey]))
+				{
+					$pattern = $match[$dKey];
+					if (preg_match("#($pattern)#ius", $dVal)) {
+						return $env;
+					}
+				}
+			}
+		}
+
+		return $this->fallback;
 	}
 }
 
