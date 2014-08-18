@@ -44,6 +44,8 @@ class Environ
 		$this->data['server_ip']       = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : null;
 		$this->data['server_software'] = isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : null;
 		$this->data['path']            = $_SERVER['SCRIPT_FILENAME'];
+		$this->data['pwd']             = isset($_SERVER['PWD']) ? $_SERVER['PWD'] : '';
+		$this->data['home']            = isset($_SERVER['HOME']) ? $_SERVER['HOME'] : '';
 		$this->data['client_ip']       = null;
 		$this->data['client_agent']    = null;
 
